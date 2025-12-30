@@ -143,7 +143,37 @@ MAX_FILE_SIZE=5242880
 
 ## 📸 Screenshots
 
-*(À ajouter prochainement)*
+🏠 Page d’accueil
+
+Vue principale de l’application présentant les dons disponibles, la navigation globale et l’accès rapide aux principales fonctionnalités.
+
+🔐 Page de connexion
+
+Interface permettant aux utilisateurs de se connecter à leur compte en toute sécurité.
+
+➕ Création d’un don
+
+Formulaire de création de don permettant aux donateurs de renseigner les informations essentielles (type d’aliment, quantité, localisation, date de disponibilité, etc.).
+
+📋 Détail d’un don
+
+Affichage détaillé d’un don avec ses informations complètes et les actions possibles (réservation, contact du donateur).
+
+🗺️ Carte interactive
+
+Carte géolocalisée permettant de visualiser les dons disponibles autour de l’utilisateur.
+
+📦 Mes dons
+
+Espace personnel listant les dons créés par l’utilisateur avec leur statut (disponible, réservé, expiré).
+
+👤 Profil utilisateur
+
+Page de profil affichant les informations personnelles de l’utilisateur, son rôle (donateur/bénéficiaire), ses statistiques et son activité récente.
+
+📬 Réservations
+
+Interface permettant de consulter les réservations effectuées ou reçues, avec le suivi des dons réservés.
 
 ---
 
