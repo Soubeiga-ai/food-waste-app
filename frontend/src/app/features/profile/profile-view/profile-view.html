@@ -1,0 +1,228 @@
+<div class="profile-container">
+
+  <!-- Loader -->
+  <div *ngIf="loading()" class="loader-container">
+    <mat-spinner></mat-spinner>
+    <p>Chargement du profil...</p>
+  </div>
+
+  <!-- Contenu -->
+  <div *ngIf="!loading() && user()">
+
+    <!-- Header -->
+    <div class="profile-header">
+      <div class="avatar-section">
+        <img 
+          [src]="user()!.avatar || 'assets/images/default-avatar.png'"
+          [alt]="user()!.firstName"
+          class="profile-avatar">
+        
+        <button mat-mini-fab color="primary" class="edit-avatar-btn" routerLink="/profile/edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+
+      <div class="profile-info">
+        <h1>{{ user()!.firstName }} {{ user()!.lastName }}</h1>
+        
+        <div class="profile-meta">
+          <mat-chip [color]="getRoleColor(user()!.role)" highlighted>
+            {{ getRoleBadge(user()!.role) }}
+          </mat-chip>
+
+          <p class="member-since">
+            <mat-icon>calendar_today</mat-icon>
+            Membre depuis {{ formatDate(user()!.createdAt) }}
+          </p>
+        </div>
+
+        <div class="profile-rating" *ngIf="user()!.rating">
+          <span class="rating-value">{{ user()!.rating.average.toFixed(1) }}</span>
+          <span class="rating-stars">{{ getRatingStars(user()!.rating.average) }}</span>
+          <span class="rating-count">({{ user()!.rating.count }} avis)</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button mat-raised-button color="primary" routerLink="/profile/edit">
+          <mat-icon>edit</mat-icon>
+          Modifier le profil
+        </button>
+      </div>
+    </div>
+
+    <div class="profile-content">
+
+      <!-- Colonne gauche : Informations -->
+      <div class="left-column">
+
+        <!-- Informations personnelles -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>person</mat-icon>
+              Informations personnelles
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="info-grid">
+              <div class="info-item">
+                <mat-icon>email</mat-icon>
+                <div>
+                  <strong>Email</strong>
+                  <p>{{ user()!.email }}</p>
+                </div>
+              </div>
+
+              <div class="info-item" *ngIf="user()!.phone">
+                <mat-icon>phone</mat-icon>
+                <div>
+                  <strong>Téléphone</strong>
+                  <p>{{ user()!.phone }}</p>
+                </div>
+              </div>
+
+              <div class="info-item" *ngIf="user()!.address">
+                <mat-icon>location_on</mat-icon>
+                <div>
+                  <strong>Adresse</strong>
+                  <p>{{ user()!.address.street }}</p>
+                  <p>{{ user()!.address.postalCode }} {{ user()!.address.city }}</p>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Statistiques -->
+        <mat-card class="stats-card" *ngIf="stats()">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>insights</mat-icon>
+              Statistiques
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="stats-grid">
+              
+              <div class="stat-item donations">
+                <div class="stat-icon">
+                  <mat-icon>restaurant</mat-icon>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value">{{ stats()!.totalDonations || 0 }}</span>
+                  <span class="stat-label">Donations créées</span>
+                </div>
+              </div>
+
+              <div class="stat-item reservations">
+                <div class="stat-icon">
+                  <mat-icon>bookmark</mat-icon>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value">{{ stats()!.totalReservations || 0 }}</span>
+                  <span class="stat-label">Réservations faites</span>
+                </div>
+              </div>
+
+              <div class="stat-item completed">
+                <div class="stat-icon">
+                  <mat-icon>done_all</mat-icon>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value">{{ stats()!.completedTransactions || 0 }}</span>
+                  <span class="stat-label">Transactions complétées</span>
+                </div>
+              </div>
+
+              <div class="stat-item impact">
+                <div class="stat-icon">
+                  <mat-icon>eco</mat-icon>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value">{{ stats()!.totalKgSaved || 0 }} kg</span>
+                  <span class="stat-label">Nourriture sauvée</span>
+                </div>
+              </div>
+
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+      <!-- Colonne droite : Activité -->
+      <div class="right-column">
+
+        <!-- Donations récentes -->
+        <mat-card class="activity-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>history</mat-icon>
+              Activité récente
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="activity-list">
+              <p class="no-activity">Aucune activité récente</p>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-button routerLink="/my-donations">
+              <mat-icon>folder</mat-icon>
+              Voir toutes mes donations
+            </button>
+            <button mat-button routerLink="/reservations/my-reservations">
+              <mat-icon>bookmark</mat-icon>
+              Voir mes réservations
+            </button>
+          </mat-card-actions>
+        </mat-card>
+
+        <!-- Badges / Récompenses -->
+        <mat-card class="badges-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>emoji_events</mat-icon>
+              Badges & Récompenses
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="badges-grid">
+              
+              <div class="badge-item" [class.earned]="(stats()?.totalDonations || 0) >= 1">
+                <mat-icon>looks_one</mat-icon>
+                <span>Première donation</span>
+              </div>
+
+              <div class="badge-item" [class.earned]="(stats()?.totalDonations || 0) >= 10">
+                <mat-icon>volunteer_activism</mat-icon>
+                <span>Généreux (10 dons)</span>
+              </div>
+
+              <div class="badge-item" [class.earned]="(stats()?.completedTransactions || 0) >= 5">
+                <mat-icon>handshake</mat-icon>
+                <span>Fiable (5 transactions)</span>
+              </div>
+
+              <div class="badge-item" [class.earned]="(stats()?.totalKgSaved || 0) >= 50">
+                <mat-icon>eco</mat-icon>
+                <span>Éco-héros (50kg sauvés)</span>
+              </div>
+
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

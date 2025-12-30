@@ -1,0 +1,195 @@
+/* =======================================================
+   CREATE DONATION PAGE — Adapté au thème Bordeaux / Velvet
+   ======================================================= */
+
+.create-donation-page {
+  min-height: 100vh;
+  padding: 32px 0;
+  background: linear-gradient(135deg, #50222D 0%, #36454F 100%); // Fond bordeaux → velvet
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 850px;
+  padding: 32px;
+  border-radius: 12px;
+  background-color: #F5DEB3; // Golden crème
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  animation: fadeInUp 0.5s ease;
+
+  mat-card-header {
+    margin-bottom: 32px;
+
+    mat-card-title {
+      text-align: center;
+
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+        color: #50222D; // Bordeaux
+      }
+
+      p {
+        font-size: 14px;
+        margin: 8px 0 0 0;
+        color: #36454F; // Velvet
+      }
+    }
+  }
+
+  mat-card-content {
+    form {
+      .full-width {
+        width: 100%;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+
+        .half-width {
+          width: 100%;
+        }
+      }
+
+      mat-form-field {
+        margin-bottom: 16px;
+
+        .mat-input-element {
+          color: #36454F; // Velvet
+        }
+      }
+
+      /* ===========================
+          UPLOAD SECTION
+      ============================ */
+      .upload-section {
+        margin: 24px 0;
+        padding: 20px;
+        border: 2px dashed #50222D; // Bordeaux
+        border-radius: 8px;
+        background-color: #FAEEDB; // Golden clair
+
+        h3 {
+          font-size: 16px;
+          font-weight: 600;
+          margin: 0 0 8px 0;
+          color: #50222D;
+        }
+
+        .upload-hint {
+          font-size: 12px;
+          color: #36454F;
+        }
+
+        .upload-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background-color: #36454F !important;
+          color: #F5DEB3 !important;
+          font-weight: 600;
+
+          &:hover {
+            background-color: #50222D !important;
+          }
+        }
+
+        .image-preview-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          gap: 12px;
+          margin-top: 16px;
+
+          .image-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #36454F;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+
+            .remove-btn {
+              position: absolute;
+              top: 4px;
+              right: 4px;
+              background-color: rgba(244, 67, 54, 0.9);
+              color: white;
+              width: 28px;
+              height: 28px;
+
+              &:hover {
+                background-color: #d32f2f;
+              }
+
+              mat-icon {
+                font-size: 18px;
+              }
+            }
+          }
+        }
+      }
+
+      /* ===========================
+          FORM ACTIONS
+      ============================ */
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(0, 0, 0, 0.15);
+
+        .submit-btn {
+          height: 48px;
+          font-size: 16px;
+          font-weight: 600;
+          background-color: #36454F !important;
+          color: #F5DEB3 !important;
+
+          &:hover {
+            background-color: #50222D !important;
+          }
+
+          mat-spinner {
+            display: inline-block;
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .form-card {
+    padding: 20px;
+
+    mat-card-content form .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+}

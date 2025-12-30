@@ -1,0 +1,155 @@
+<mat-toolbar color="primary" class="navbar">
+  <div class="navbar-container">
+
+    <!-- Logo -->
+    <div class="navbar-brand">
+      <a routerLink="/" class="logo">
+        <mat-icon>restaurant</mat-icon>
+        <span>Food Waste</span>
+      </a>
+    </div>
+
+    <!-- Menu principal -->
+    <nav class="navbar-menu">
+      <a
+        mat-button
+        routerLink="/donations"
+        routerLinkActive="active"
+        class="nav-link"
+      >
+        <mat-icon>volunteer_activism</mat-icon>
+        <span>Donations</span>
+      </a>
+
+      @if (isAuthenticated()) {
+        <a
+          mat-button
+          routerLink="/my-donations"
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          <mat-icon>inventory</mat-icon>
+          <span>Mes dons</span>
+        </a>
+
+        <button
+          mat-button
+          class="nav-link"
+          [matMenuTriggerFor]="reservationsMenu"
+        >
+          <mat-icon>bookmark</mat-icon>
+          <span>Réservations</span>
+          <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+        </button>
+      }
+    </nav>
+
+    <!-- Actions -->
+    <div class="navbar-actions">
+      @if (isAuthenticated()) {
+
+        <!-- 🔔 Notifications -->
+        <button
+          mat-icon-button
+          routerLink="/notifications"
+          class="notification-btn"
+          aria-label="Notifications"
+          [matBadge]="unreadNotificationsCount()"
+          matBadgeColor="warn"
+          matBadgeOverlap="false"
+          [matBadgeHidden]="unreadNotificationsCount() === 0"
+        >
+          <mat-icon>notifications</mat-icon>
+        </button>
+
+        <!-- Créer un don -->
+        <button
+          mat-raised-button
+          color="accent"
+          routerLink="/donations/create"
+          class="create-btn"
+        >
+          <mat-icon>add</mat-icon>
+          <span>Créer un don</span>
+        </button>
+
+        <!-- Menu utilisateur -->
+        <button
+          mat-icon-button
+          class="user-menu-btn"
+          [matMenuTriggerFor]="userMenu"
+          aria-label="Menu utilisateur"
+        >
+          @if (currentUser()?.avatar) {
+            <img
+              [src]="currentUser()?.avatar"
+              alt="Avatar"
+              class="avatar"
+            />
+          } @else {
+            <mat-icon>account_circle</mat-icon>
+          }
+        </button>
+
+      } @else {
+
+        <!-- Connexion -->
+        <button mat-button routerLink="/auth/login" class="auth-btn">
+          <mat-icon>login</mat-icon>
+          <span>Connexion</span>
+        </button>
+
+        <!-- Inscription -->
+        <button
+          mat-raised-button
+          color="accent"
+          routerLink="/auth/register"
+          class="auth-btn"
+        >
+          <mat-icon>person_add</mat-icon>
+          <span>Inscription</span>
+        </button>
+
+      }
+    </div>
+  </div>
+</mat-toolbar>
+
+<!-- Menu Réservations -->
+<mat-menu #reservationsMenu="matMenu">
+  <button mat-menu-item routerLink="/reservations/my-reservations">
+    <mat-icon>bookmark</mat-icon>
+    <span>Mes réservations</span>
+  </button>
+  <button mat-menu-item routerLink="/reservations/received">
+    <mat-icon>inbox</mat-icon>
+    <span>Réservations reçues</span>
+  </button>
+</mat-menu>
+
+<!-- Menu Utilisateur -->
+<mat-menu #userMenu="matMenu">
+  <div class="user-info">
+    <p class="user-name">{{ userName() }}</p>
+    <p class="user-email">{{ currentUser()?.email }}</p>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <button mat-menu-item routerLink="/profile">
+    <mat-icon>person</mat-icon>
+    <span>Mon profil</span>
+  </button>
+
+  <button mat-menu-item routerLink="/dashboard">
+    <mat-icon>dashboard</mat-icon>
+    <span>Tableau de bord</span>
+  </button>
+
+  <mat-divider></mat-divider>
+
+  <button mat-menu-item (click)="onLogout()">
+    <mat-icon>logout</mat-icon>
+    <span>Se déconnecter</span>
+  </button>
+</mat-menu>

@@ -1,0 +1,67 @@
+<div class="dashboard-page">
+
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>
+      <mat-icon>dashboard</mat-icon>
+      Tableau de bord
+    </h1>
+    <p class="subtitle">Vue d’ensemble de votre activité</p>
+  </div>
+
+  <!-- Grid -->
+  <div class="stats-grid">
+
+    <mat-card class="stat-card">
+      <mat-icon>volunteer_activism</mat-icon>
+      <div>
+        <h3>{{ stats().donations }}</h3>
+        <p>Donations disponibles</p>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>inventory</mat-icon>
+      <div>
+        <h3>{{ stats().myDonations }}</h3>
+        <p>Mes dons</p>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>bookmark</mat-icon>
+      <div>
+        <h3>{{ stats().myReservations }}</h3>
+        <p>Mes réservations</p>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>inbox</mat-icon>
+      <div>
+        <h3>{{ stats().receivedReservations }}</h3>
+        <p>Réservations reçues</p>
+      </div>
+    </mat-card>
+
+  </div>
+
+  <!-- Actions rapides -->
+  <div class="quick-actions">
+    <button mat-raised-button routerLink="/donations">
+      <mat-icon>search</mat-icon>
+      Voir les dons
+    </button>
+
+    <button mat-raised-button routerLink="/donations/create">
+      <mat-icon>add</mat-icon>
+      Créer un don
+    </button>
+
+    <button mat-raised-button routerLink="/reservations/my-reservations">
+      <mat-icon>bookmark</mat-icon>
+      Mes réservations
+    </button>
+  </div>
+
+</div>

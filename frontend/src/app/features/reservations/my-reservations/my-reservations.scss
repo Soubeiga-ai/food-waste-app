@@ -1,0 +1,320 @@
+/* ================================
+   PAGE : Mes Réservations
+   Style harmonisé avec la NAVBAR
+   ================================ */
+
+.my-reservations-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  min-height: 100vh;
+
+  background: linear-gradient(
+    135deg,
+    rgba(80, 34, 45, 0.95),
+    rgba(54, 69, 79, 0.92)
+  );
+
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.5s ease;
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  margin-bottom: 32px;
+  text-align: left;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 32px;
+    font-weight: 600;
+    color: #f5deb3;
+    margin: 0;
+
+    mat-icon {
+      font-size: 36px;
+      color: #f5deb3;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+    }
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: rgba(245, 222, 179, 0.88);
+    opacity: 0.9;
+  }
+}
+
+/* ---------- Loader ---------- */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #f5deb3;
+  gap: 20px;
+}
+
+/* ---------- Onglets ---------- */
+.filter-tabs {
+  margin-bottom: 32px;
+
+  .mat-mdc-tab-labels {
+    color: #f5deb3 !important;
+  }
+
+  .mat-mdc-tab {
+    background: rgba(255,255,255,0.1) !important;
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+  }
+}
+
+/* ---------- GRID ---------- */
+.reservations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+/* ====================================
+            CARTE
+   ==================================== */
+
+.reservation-card {
+  background: rgba(245, 222, 179, 0.92);
+  backdrop-filter: blur(6px);
+  border-radius: 14px;
+  overflow: hidden;
+
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.25),
+    0 0 18px rgba(255,255,255,0.06) inset;
+
+  transition: transform .28s ease, box-shadow .28s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 12px 26px rgba(0,0,0,0.35),
+      0 0 20px rgba(255,255,255,0.08) inset;
+  }
+
+  /* ------ Header ------ */
+  .card-header {
+    padding: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    mat-chip {
+      background-color: rgba(0,0,0,0.65) !important;
+      backdrop-filter: blur(4px);
+      color: #f5deb3 !important;
+      border-radius: 12px;
+      font-weight: 500;
+
+      mat-icon {
+        font-size: 18px;
+        margin-right: 4px;
+        color: #f5deb3 !important;
+      }
+    }
+  }
+
+  /* ------ Image ------ */
+  .donation-image {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    border-radius: 12px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .no-image-placeholder {
+      height: 100%;
+      background: linear-gradient(135deg, #50222d, #36454f);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f5deb3;
+
+      mat-icon {
+        font-size: 64px;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+      }
+    }
+  }
+
+  /* ------ Infos ------ */
+  .card-content {
+    padding: 16px;
+    color: #36454f;
+  }
+
+  .donation-info {
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 22px;
+      margin-bottom: 16px;
+      color: #50222d;
+      font-weight: 600;
+
+      .category-icon {
+        font-size: 26px;
+      }
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #36454f;
+      font-size: 15px;
+      margin-bottom: 10px;
+
+      mat-icon {
+        color: #4caf50;
+        font-size: 20px;
+      }
+    }
+
+    /* Donor */
+    .donor-info {
+      margin-top: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,0.55);
+      border-radius: 10px;
+
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0,0,0,0.12);
+
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      .donor-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(54,69,79,0.5);
+      }
+
+      strong {
+        color: #50222d;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 2px 0 0 0;
+        color: #36454f;
+
+        mat-icon {
+          font-size: 16px;
+          color: #36454f;
+        }
+      }
+    }
+
+    /* Message */
+    .message {
+      margin-top: 16px;
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+      background: rgba(227,242,253,0.8);
+      border-radius: 8px;
+      border-left: 4px solid #2196f3;
+
+      mat-icon {
+        color: #2196f3;
+      }
+
+      p {
+        margin: 0;
+        color: #333;
+        font-size: 14px;
+      }
+    }
+  }
+
+  /* ---------- Actions ---------- */
+  mat-card-actions {
+    display: flex;
+    padding: 16px;
+    gap: 12px;
+
+    button {
+      background-color: rgba(0,0,0,0.65) !important;
+      color: #f5deb3 !important;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+
+      &:hover {
+        background-color: rgba(0,0,0,0.85) !important;
+      }
+    }
+  }
+}
+
+/* ---------- Aucune réservation ---------- */
+.no-reservations {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+
+  mat-icon {
+    font-size: 80px;
+    color: rgba(245,222,179,0.7);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    color: #f5deb3;
+  }
+
+  p {
+    color: rgba(245,222,179,0.7);
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .my-reservations-container {
+    padding: 20px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .reservations-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Animation ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

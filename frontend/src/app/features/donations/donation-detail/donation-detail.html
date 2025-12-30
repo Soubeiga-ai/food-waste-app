@@ -1,0 +1,225 @@
+<div class="donation-detail-container">
+
+  <!-- Loader -->
+  <div *ngIf="loading()" class="loader-container">
+    <mat-spinner></mat-spinner>
+    <p>Chargement des détails...</p>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!loading() && donation()" class="detail-content">
+
+    <!-- Bouton retour -->
+    <button mat-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Retour à la liste
+    </button>
+
+    <!-- Galerie d'images -->
+    <div class="image-gallery">
+
+      <div *ngIf="donation()?.images?.length > 0; else noImg" class="carousel">
+
+        <button 
+          mat-icon-button 
+          class="carousel-btn prev" 
+          (click)="prevImage()" 
+          *ngIf="donation()!.images.length > 1">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <img 
+          [src]="donation()!.images[currentImageIndex()]"
+          [alt]="donation()!.title"
+          class="main-image">
+
+        <button 
+          mat-icon-button 
+          class="carousel-btn next" 
+          (click)="nextImage()"
+          *ngIf="donation()!.images.length > 1">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+
+        <!-- Indicateurs -->
+        <div class="indicators" *ngIf="donation()!.images.length > 1">
+          <span 
+            class="indicator"
+            *ngFor="let img of donation()!.images; let i = index"
+            [class.active]="currentImageIndex() === i"
+            (click)="currentImageIndex.set(i)">
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Template si aucune image -->
+      <ng-template #noImg>
+        <div class="no-image">
+          <mat-icon>image_not_supported</mat-icon>
+          <p>Aucune image disponible</p>
+        </div>
+      </ng-template>
+
+    </div>
+
+    <!-- Informations principales -->
+    <mat-card class="info-card">
+
+      <mat-card-header>
+        <div class="header-content">
+          <div>
+            <mat-card-title>
+              <span class="category-icon">
+                {{ getCategoryIcon(donation()!.category) }}
+              </span>
+              {{ donation()!.title }}
+            </mat-card-title>
+
+            <mat-card-subtitle>
+              Publié le {{ donation()!.createdAt | date:'dd/MM/yyyy à HH:mm' }}
+            </mat-card-subtitle>
+          </div>
+
+          <mat-chip [color]="getStatusColor(donation()!.status)" highlighted>
+            {{ getStatusLabel(donation()!.status) }}
+          </mat-chip>
+
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <!-- Alerte expiration -->
+        <div *ngIf="isExpiringSoon() && donation()!.status === 'available'" 
+             class="alert alert-warning">
+          <mat-icon>warning</mat-icon>
+          ⚠️ Ce produit expire bientôt ! À récupérer rapidement.
+        </div>
+
+        <!-- Détails -->
+        <div class="details-grid">
+
+          <div class="detail-item">
+            <mat-icon>category</mat-icon>
+            <div>
+              <strong>Catégorie</strong>
+              <p>{{ donation()!.category }}</p>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <mat-icon>shopping_basket</mat-icon>
+            <div>
+              <strong>Quantité</strong>
+              <p>{{ donation()!.quantity }} {{ donation()!.unit }}</p>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <mat-icon>event</mat-icon>
+            <div>
+              <strong>Date limite</strong>
+              <p>{{ donation()!.expiryDate | date:'dd/MM/yyyy' }}</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Description -->
+        <div class="description-section">
+          <h3><mat-icon>description</mat-icon> Description</h3>
+          <p>{{ donation()!.description }}</p>
+        </div>
+
+        <!-- Localisation -->
+        <div class="location-section">
+          <h3><mat-icon>location_on</mat-icon> Lieu de retrait</h3>
+          <p class="address">{{ donation()!.pickupLocation.address }}</p>
+          <div id="map" class="map"></div>
+        </div>
+
+        <!-- Donateur -->
+        <div class="donor-section">
+          <h3><mat-icon>person</mat-icon> Donateur</h3>
+
+          <div class="donor-card">
+            <img 
+              [src]="donation()!.donor.avatar || 'assets/images/default-avatar.png'"
+              class="donor-avatar">
+
+            <div class="donor-info">
+              <h4>{{ donation()!.donor.firstName }} {{ donation()!.donor.lastName }}</h4>
+
+              <p>
+                <mat-icon>email</mat-icon>
+                {{ donation()!.donor.email }}
+              </p>
+
+              <p *ngIf="donation()!.donor.phone">
+                <mat-icon>phone</mat-icon>
+                {{ donation()!.donor.phone }}
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </mat-card-content>
+
+      <mat-card-actions>
+
+        <!-- Réserver -->
+        <button 
+          *ngIf="canReserve()"
+          mat-raised-button 
+          color="primary"
+          class="reserve-btn"
+          (click)="reserveDonation()"
+          [disabled]="reserving()">
+
+          <mat-spinner *ngIf="reserving()" diameter="20"></mat-spinner>
+          <mat-icon *ngIf="!reserving()">bookmark_add</mat-icon>
+
+          <span>
+            {{ reserving() ? 'Réservation en cours...' : 'Réserver ce don' }}
+          </span>
+        </button>
+
+        <!-- Modifier (propriétaire) -->
+        <button 
+          *ngIf="isOwner()"
+          mat-raised-button 
+          color="accent"
+          [routerLink]="['/donations/edit', donation()!._id]">
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+
+        <!-- Si pas connecté -->
+        <button 
+          *ngIf="!currentUser()"
+          mat-raised-button 
+          color="primary"
+          routerLink="/auth/login">
+          <mat-icon>login</mat-icon>
+          Connectez-vous pour réserver
+        </button>
+
+      </mat-card-actions>
+
+    </mat-card>
+  </div>
+
+  <!-- Aucun don trouvé -->
+  <div *ngIf="!loading() && !donation()" class="no-donation">
+    <mat-icon>error_outline</mat-icon>
+    <h2>Donation introuvable</h2>
+    <p>Cette donation n'existe pas ou a été supprimée.</p>
+
+    <button mat-raised-button color="primary" (click)="goBack()">
+      Retour à la liste
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,310 @@
+<div class="reservation-detail-container">
+
+  <!-- Loader -->
+  <div *ngIf="loading()" class="loader-container">
+    <mat-spinner></mat-spinner>
+    <p>Chargement des détails...</p>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!loading() && reservation()">
+
+    <!-- Bouton retour -->
+    <button mat-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Retour
+    </button>
+
+    <!-- Header avec statut -->
+    <div class="header">
+      <h1>Détails de la réservation</h1>
+      <mat-chip [color]="getStatusColor(reservation()!.status)" highlighted class="status-chip">
+        {{ getStatusLabel(reservation()!.status) }}
+      </mat-chip>
+    </div>
+
+    <div class="content-grid">
+
+      <!-- Colonne gauche : Infos donation -->
+      <div class="left-column">
+
+        <!-- Donation -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>restaurant</mat-icon>
+              Donation
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <!-- Images -->
+            <div class="donation-images" *ngIf="reservation()!.donation?.images?.length > 0">
+              <img 
+                [src]="reservation()!.donation.images[0]" 
+                [alt]="reservation()!.donation.title"
+                class="main-image">
+            </div>
+
+            <h2 class="donation-title">
+              <span class="category-icon">
+                {{ getCategoryIcon(reservation()!.donation?.category) }}
+              </span>
+              {{ reservation()!.donation?.title }}
+            </h2>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <mat-icon>category</mat-icon>
+                <div>
+                  <strong>Catégorie</strong>
+                  <p>{{ reservation()!.donation?.category }}</p>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <mat-icon>shopping_basket</mat-icon>
+                <div>
+                  <strong>Quantité</strong>
+                  <p>{{ reservation()!.donation?.quantity }} {{ reservation()!.donation?.unit }}</p>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <mat-icon>event</mat-icon>
+                <div>
+                  <strong>Date limite</strong>
+                  <p>{{ reservation()!.donation?.expiryDate | date:'dd/MM/yyyy' }}</p>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Localisation -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>location_on</mat-icon>
+              Lieu de retrait
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="address">
+              <mat-icon>place</mat-icon>
+              {{ reservation()!.donation?.pickupLocation?.address }}
+            </p>
+            <div id="map" class="map"></div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+      <!-- Colonne droite : Infos réservation -->
+      <div class="right-column">
+
+        <!-- Informations de réservation -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>info</mat-icon>
+              Informations de réservation
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="reservation-info">
+              <div class="info-row">
+                <mat-icon>schedule</mat-icon>
+                <div>
+                  <strong>Date de retrait prévue</strong>
+                  <p>{{ formatDate(reservation()!.pickupDate) }}</p>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <mat-icon>access_time</mat-icon>
+                <div>
+                  <strong>Réservé le</strong>
+                  <p>{{ formatDate(reservation()!.createdAt) }}</p>
+                </div>
+              </div>
+
+              <div class="info-row" *ngIf="reservation()!.message">
+                <mat-icon>message</mat-icon>
+                <div>
+                  <strong>Message</strong>
+                  <p class="message-text">{{ reservation()!.message }}</p>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Donateur -->
+        <mat-card class="section-card person-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>person</mat-icon>
+              Donateur
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="person-info">
+              <img 
+                [src]="reservation()!.donor?.avatar || 'assets/images/default-avatar.png'"
+                class="person-avatar">
+              <div class="person-details">
+                <h3>{{ reservation()!.donor?.firstName }} {{ reservation()!.donor?.lastName }}</h3>
+                <p *ngIf="reservation()!.donor?.phone">
+                  <mat-icon>phone</mat-icon>
+                  {{ reservation()!.donor.phone }}
+                </p>
+                <p *ngIf="reservation()!.donor?.email && isBeneficiary()">
+                  <mat-icon>email</mat-icon>
+                  {{ reservation()!.donor.email }}
+                </p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Bénéficiaire -->
+        <mat-card class="section-card person-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>person_outline</mat-icon>
+              Bénéficiaire
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="person-info">
+              <img 
+                [src]="reservation()!.beneficiary?.avatar || 'assets/images/default-avatar.png'"
+                class="person-avatar">
+              <div class="person-details">
+                <h3>{{ reservation()!.beneficiary?.firstName }} {{ reservation()!.beneficiary?.lastName }}</h3>
+                <p *ngIf="reservation()!.beneficiary?.phone">
+                  <mat-icon>phone</mat-icon>
+                  {{ reservation()!.beneficiary.phone }}
+                </p>
+                <p *ngIf="reservation()!.beneficiary?.email && isDonor()">
+                  <mat-icon>email</mat-icon>
+                  {{ reservation()!.beneficiary.email }}
+                </p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Historique -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>history</mat-icon>
+              Historique
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="timeline">
+              <div class="timeline-item">
+                <mat-icon class="timeline-icon created">add_circle</mat-icon>
+                <div>
+                  <strong>Réservation créée</strong>
+                  <p>{{ formatDate(reservation()!.createdAt) }}</p>
+                </div>
+              </div>
+
+              <div class="timeline-item" *ngIf="reservation()!.confirmedAt">
+                <mat-icon class="timeline-icon confirmed">check_circle</mat-icon>
+                <div>
+                  <strong>Réservation confirmée</strong>
+                  <p>{{ formatDate(reservation()!.confirmedAt) }}</p>
+                </div>
+              </div>
+
+              <div class="timeline-item" *ngIf="reservation()!.completedAt">
+                <mat-icon class="timeline-icon completed">done_all</mat-icon>
+                <div>
+                  <strong>Réservation complétée</strong>
+                  <p>{{ formatDate(reservation()!.completedAt) }}</p>
+                </div>
+              </div>
+
+              <div class="timeline-item" *ngIf="reservation()!.cancelledAt">
+                <mat-icon class="timeline-icon cancelled">cancel</mat-icon>
+                <div>
+                  <strong>Réservation annulée</strong>
+                  <p>{{ formatDate(reservation()!.cancelledAt) }}</p>
+                  <p class="cancel-reason" *ngIf="reservation()!.cancelReason">
+                    Raison: {{ reservation()!.cancelReason }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+    </div>
+
+    <!-- Actions -->
+    <mat-card class="actions-card">
+      <mat-card-actions>
+        <button 
+          mat-raised-button 
+          color="primary"
+          *ngIf="canConfirm()"
+          (click)="confirmReservation()"
+          [disabled]="processing()">
+          <mat-icon>check_circle</mat-icon>
+          Confirmer la réservation
+        </button>
+
+        <button 
+          mat-raised-button 
+          color="primary"
+          *ngIf="canComplete()"
+          (click)="completeReservation()"
+          [disabled]="processing()">
+          <mat-icon>done_all</mat-icon>
+          Marquer comme complétée
+        </button>
+
+        <button 
+          mat-button 
+          color="warn"
+          *ngIf="canCancel()"
+          (click)="cancelReservation()"
+          [disabled]="processing()">
+          <mat-icon>cancel</mat-icon>
+          Annuler la réservation
+        </button>
+
+        <button 
+          mat-button
+          [routerLink]="['/donations', reservation()!.donation?._id]">
+          <mat-icon>visibility</mat-icon>
+          Voir la donation
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="!loading() && !reservation()" class="no-reservation">
+    <mat-icon>error_outline</mat-icon>
+    <h2>Réservation introuvable</h2>
+    <p>Cette réservation n'existe pas ou vous n'avez pas accès.</p>
+    <button mat-raised-button color="primary" (click)="goBack()">
+      Retour
+    </button>
+  </div>
+
+</div>

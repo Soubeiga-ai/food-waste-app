@@ -1,0 +1,108 @@
+/* ================================
+   LOGIN PAGE STYLING
+   ================================ */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #50222D 0%, #36454F 100%); // Bordeaux → Velvet
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 450px;
+  padding: 25px;
+  border-radius: 12px;
+  background-color: #F5DEB3; // Golden Creme
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  animation: fadeInUp 0.5s ease;
+
+  mat-card-header {
+    margin-bottom: 20px;
+
+    mat-card-title {
+      text-align: center;
+
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+        color: #50222D; // Bordeaux
+      }
+    }
+  }
+
+  mat-card-content {
+    form {
+      mat-form-field {
+        margin-bottom: 16px;
+
+        .mat-input-element {
+          color: #36454F; // Velvet
+        }
+      }
+
+      .full-width {
+        width: 100%;
+      }
+
+      .submit-btn {
+        margin-top: 16px;
+        height: 48px;
+        font-size: 16px;
+        font-weight: 600;
+        background-color: #36454F !important;
+        color: #F5DEB3 !important;
+
+        &:hover {
+          background-color: #50222D !important;
+        }
+      }
+    }
+
+    .auth-links {
+      text-align: center;
+      margin-top: 20px;
+
+      p {
+        color: #50222D;
+        font-size: 14px;
+
+        a {
+          color: #36454F;
+          font-weight: 600;
+          text-decoration: none;
+
+          &:hover {
+            color: #50222D;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-card {
+    padding: 16px;
+
+    mat-card-header mat-card-title h1 {
+      font-size: 24px;
+    }
+  }
+}

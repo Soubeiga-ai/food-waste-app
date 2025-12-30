@@ -1,0 +1,218 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQ2MTIxYjg3ZmU0ZTNmYmM5YjI1MCIsImVtYWlsIjoiamVhbi5kdXBvbnRAZXhhbXBsZS5jb20iLCJyb2xlIjoiZG9ub3IiLCJpYXQiOjE3NjUwNDA2MDIsImV4cCI6MTc2NTY0NTQwMn0.EaDlzHOBYhn0DLoGQlrX1eZeXrWODdafbwMINmvk_N8
+
+### ============================================
+### 1. AUTHENTIFICATION
+### ============================================
+
+### 1.1 Test de connexion au serveur
+GET http://localhost:3000
+
+### 1.2 Inscription d'un nouvel utilisateur
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Jean",
+  "lastName": "Dupont",
+  "email": "jean.dupont@example.com",
+  "password": "password123",
+  "phone": "+226 70 12 34 56",
+  "role": "donor",
+  "address": {
+    "street": "Avenue Kwame Nkrumah",
+    "city": "Ouagadougou",
+    "postalCode": "01 BP 1234",
+    "coordinates": [-1.5247, 12.3702]
+  }
+}
+
+### 1.3 Connexion
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "jean.dupont@example.com",
+  "password": "password123"
+}
+
+### 1.4 Obtenir le profil de l'utilisateur connecté
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### 1.5 Inscription d'un bénéficiaire
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Marie",
+  "lastName": "Kaboré",
+  "email": "marie.kabore@example.com",
+  "password": "password123",
+  "phone": "+226 75 98 76 54",
+  "role": "beneficiary",
+  "address": {
+    "street": "Rue de la Liberté",
+    "city": "Ouagadougou",
+    "postalCode": "01 BP 5678",
+    "coordinates": [-1.5180, 12.3686]
+  }
+}
+
+### ============================================
+### 2. DONATIONS
+### ============================================
+
+### 2.1 Créer une donation (nécessite authentification)
+POST {{baseUrl}}/donations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Surplus de pain frais",
+  "description": "Pain du jour non vendu, encore frais et consommable. À retirer avant 18h.",
+  "category": "pain",
+  "quantity": 10,
+  "unit": "piece",
+  "expiryDate": "2025-12-31T18:00:00.000Z",
+  "pickupLocation": {
+    "address": "Boulangerie Centrale, Avenue Kwame Nkrumah, Ouagadougou",
+    "coordinates": [-1.5247, 12.3702]
+  }
+}
+
+### 2.2 Obtenir toutes les donations
+GET {{baseUrl}}/donations?page=1&limit=10
+
+### 2.3 Rechercher des donations par catégorie
+GET {{baseUrl}}/donations?category=pain&status=available
+
+### 2.4 Rechercher des donations à proximité
+GET {{baseUrl}}/donations?longitude=-1.5247&latitude=12.3702&maxDistance=5000
+
+### 2.5 Obtenir une donation spécifique (remplacer :id)
+GET {{baseUrl}}/donations/673c1234567890abcdef1234
+
+### 2.6 Obtenir mes donations
+GET {{baseUrl}}/donations/my
+Authorization: Bearer {{token}}
+
+### 2.7 Mettre à jour une donation
+PUT {{baseUrl}}/donations/673c1234567890abcdef1234
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Pain frais - Mise à jour",
+  "quantity": 8
+}
+
+### 2.8 Supprimer une donation
+DELETE {{baseUrl}}/donations/673c1234567890abcdef1234
+Authorization: Bearer {{token}}
+
+### ============================================
+### 3. RÉSERVATIONS
+### ============================================
+
+### 3.1 Créer une réservation
+POST {{baseUrl}}/reservations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "donationId": "673c1234567890abcdef1234",
+  "pickupDate": "2025-12-30T17:00:00.000Z",
+  "message": "Je souhaiterais récupérer ce pain pour notre association. Merci !"
+}
+
+### 3.2 Obtenir mes réservations (en tant que bénéficiaire)
+GET {{baseUrl}}/reservations/my?type=beneficiary
+Authorization: Bearer {{token}}
+
+### 3.3 Obtenir mes réservations (en tant que donateur)
+GET {{baseUrl}}/reservations/my?type=donor
+Authorization: Bearer {{token}}
+
+### 3.4 Obtenir une réservation spécifique
+GET {{baseUrl}}/reservations/673c1234567890abcdef5678
+Authorization: Bearer {{token}}
+
+### 3.5 Confirmer une réservation (donateur)
+PUT {{baseUrl}}/reservations/673c1234567890abcdef5678/confirm
+Authorization: Bearer {{token}}
+
+### 3.6 Compléter une réservation
+PUT {{baseUrl}}/reservations/673c1234567890abcdef5678/complete
+Authorization: Bearer {{token}}
+
+### 3.7 Annuler une réservation
+PUT {{baseUrl}}/reservations/673c1234567890abcdef5678/cancel
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Changement de planning, impossible de venir"
+}
+
+### ============================================
+### 4. UTILISATEURS
+### ============================================
+
+### 4.1 Obtenir un profil utilisateur
+GET {{baseUrl}}/users/673c1234567890abcdef9999
+
+### 4.2 Mettre à jour son profil
+PUT {{baseUrl}}/users/673c1234567890abcdef9999
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Jean-Claude",
+  "phone": "+226 70 11 22 33"
+}
+
+### 4.3 Obtenir les donations d'un utilisateur
+GET {{baseUrl}}/users/673c1234567890abcdef9999/donations
+
+### 4.4 Obtenir les avis d'un utilisateur
+GET {{baseUrl}}/users/673c1234567890abcdef9999/reviews
+
+### 4.5 Obtenir les statistiques d'un utilisateur
+GET {{baseUrl}}/users/673c1234567890abcdef9999/stats
+
+### ============================================
+### 5. AVIS
+### ============================================
+
+### 5.1 Créer un avis
+POST {{baseUrl}}/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reservationId": "673c1234567890abcdef5678",
+  "rating": 5,
+  "comment": "Très bonne expérience, personne ponctuelle et sympathique !"
+}
+
+### 5.2 Obtenir les avis d'un utilisateur
+GET {{baseUrl}}/reviews/user/673c1234567890abcdef9999
+
+### 5.3 Obtenir un avis spécifique
+GET {{baseUrl}}/reviews/673c1234567890abcdefaaaa
+
+### 5.4 Mettre à jour un avis
+PUT {{baseUrl}}/reviews/673c1234567890abcdefaaaa
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "rating": 4,
+  "comment": "Très bien, juste un petit retard"
+}
+
+### 5.5 Supprimer un avis
+DELETE {{baseUrl}}/reviews/673c1234567890abcdefaaaa
+Authorization: Bearer {{token}}

@@ -1,0 +1,89 @@
+<div class="notifications-container">
+
+  <h2 class="page-title">Vos Notifications</h2>
+
+  @if (loading()) {
+    <div class="loading-spinner">
+      <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+    </div>
+  } @else {
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="markAllAsRead()"
+        [disabled]="unreadCount() === 0"
+      >
+        <mat-icon>done_all</mat-icon>
+        Marquer tout comme lu
+      </button>
+
+      <button
+        mat-flat-button
+        color="warn"
+        (click)="deleteAll()"
+        [disabled]="allNotifications().length === 0"
+      >
+        <mat-icon>delete</mat-icon>
+        Tout supprimer
+      </button>
+    </div>
+
+    <!-- ONGLET -->
+    <mat-tab-group (selectedIndexChange)="setFilterIndex($event)">
+      <mat-tab label="Tout ({{ allNotifications().length }})"></mat-tab>
+      <mat-tab label="Non lues ({{ unreadCount() }})"></mat-tab>
+      <mat-tab label="Lues ({{ readCount() }})"></mat-tab>
+    </mat-tab-group>
+
+    <!-- LISTE -->
+    <mat-list class="notification-list">
+
+      @if (filteredNotifications().length === 0) {
+        <mat-list-item class="empty-state">
+          Aucune notification à afficher dans ce filtre.
+        </mat-list-item>
+      }
+
+      @for (notification of filteredNotifications(); track notification._id) {
+        <mat-list-item
+          class="notification-item"
+          [class.unread]="!notification.isRead"
+          (click)="onNotificationClick(notification)"
+        >
+
+          <mat-icon
+            matListItemIcon
+            [ngStyle]="{ color: getNotificationColor(notification.type) }"
+          >
+            {{ getNotificationIcon(notification.type) }}
+          </mat-icon>
+
+          <div matListItemTitle class="title">
+            {{ notification.title }}
+          </div>
+
+          <div matListItemLine class="message">
+            {{ notification.message }}
+          </div>
+
+          <div matListItemMeta class="meta">
+            <span class="date">{{ formatDate(notification.createdAt) }}</span>
+
+            <button
+              mat-icon-button
+              (click)="deleteNotification(notification, $event)"
+              title="Supprimer"
+            >
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+
+        </mat-list-item>
+      }
+
+    </mat-list>
+  }
+</div>

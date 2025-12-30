@@ -1,0 +1,325 @@
+/* ============================================
+   PAGE : Détails d'une réservation
+   Thème harmonisé (Bordeaux / Velvet / Crème)
+   ============================================ */
+
+.reservation-detail-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  min-height: 100vh;
+
+  background: linear-gradient(135deg, #50222D 0%, #36454F 100%);
+  animation: fadeInUp 0.5s ease;
+  color: #F5DEB3;
+}
+
+/* ---------- Loader ---------- */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+  color: #F5DEB3;
+}
+
+/* ---------- Bouton retour ---------- */
+.back-button {
+  color: #F5DEB3 !important;
+  margin-bottom: 20px;
+
+  mat-icon {
+    color: #F5DEB3 !important;
+  }
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 32px;
+    margin: 0;
+    font-weight: 600;
+    color: #F5DEB3;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+
+    mat-icon {
+      color: #F5DEB3;
+      font-size: 36px;
+    }
+  }
+
+  .status-chip {
+    background: #F5DEB3 !important;
+    color: #50222D !important;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 12px;
+  }
+}
+
+/* ---------- Grille ---------- */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* ---------- Cartes de section ---------- */
+.section-card {
+  background: #F5DEB3 !important;
+  color: #36454F !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+
+  mat-card-header {
+    background: rgba(54, 69, 79, 0.15);
+    margin: -16px -16px 16px -16px;
+    padding: 16px;
+    border-radius: 12px 12px 0 0;
+
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #50222D;
+      font-weight: 600;
+
+      mat-icon {
+        color: #36454F;
+      }
+    }
+  }
+}
+
+/* ---------- Images donation ---------- */
+.donation-images {
+  width: 100%;
+  height: 260px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background: #e8d4b2;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+
+  .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* ---------- Donation Title ---------- */
+.donation-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #50222D;
+
+  .category-icon {
+    font-size: 26px;
+  }
+}
+
+/* ---------- Information grid ---------- */
+.info-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.info-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(255,255,255,0.55);
+  border-radius: 10px;
+  color: #36454F;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.20);
+
+  mat-icon {
+    color: #36454F;
+  }
+
+  strong {
+    color: #50222D;
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+    color: #36454F;
+    font-weight: 600;
+  }
+}
+
+/* ---------- Localisation ---------- */
+.address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #50222D;
+  font-weight: 600;
+
+  mat-icon {
+    color: #36454F;
+  }
+}
+
+.map {
+  height: 300px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* ---------- Person Cards ---------- */
+.person-card {
+  background: #F5DEB3 !important;
+  color: #36454F !important;
+
+  .person-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    .person-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #36454F;
+    }
+
+    h3 {
+      color: #50222D;
+      font-weight: 600;
+    }
+
+    p {
+      display: flex;
+      gap: 6px;
+      color: #36454F;
+    }
+  }
+}
+
+/* ---------- Timeline ---------- */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .timeline-item {
+    background: rgba(255,255,255,0.55);
+    padding: 14px;
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+
+    .timeline-icon {
+      font-size: 30px;
+      color: #36454F;
+    }
+
+    strong {
+      color: #50222D;
+    }
+
+    .cancel-reason {
+      background: #ffebee;
+      border-left: 4px solid #c62828;
+      padding: 6px 10px;
+      border-radius: 6px;
+      color: #c62828;
+      margin-top: 6px;
+    }
+  }
+}
+
+/* ---------- Actions ---------- */
+.actions-card {
+  background: #F5DEB3 !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  border-radius: 12px;
+
+  mat-card-actions {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+
+    button {
+      background: #36454F !important;
+      color: #F5DEB3 !important;
+
+      &:hover {
+        background: #50222D !important;
+      }
+    }
+  }
+}
+
+/* ---------- Pas de réservation ---------- */
+.no-reservation {
+  text-align: center;
+  padding: 80px 20px;
+
+  mat-icon {
+    font-size: 80px;
+    color: #F5DEB3;
+    opacity: 0.7;
+  }
+
+  h2 {
+    color: #F5DEB3;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: rgba(245,222,179,0.85);
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .reservation-detail-container {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* ---------- Animation ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

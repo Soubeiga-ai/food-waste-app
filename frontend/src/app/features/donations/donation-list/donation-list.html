@@ -1,0 +1,171 @@
+<!-- src/app/features/donations/donation-list/donation-list.html -->
+<div class="donations-page">
+  <div class="container">
+    <!-- En-tête -->
+    <div class="page-header">
+      <h1>🍎 Donations Disponibles</h1>
+      <p>Découvrez les dons alimentaires près de chez vous</p>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filters-section">
+      <mat-card class="filters-card">
+        <div class="filters-content">
+          <!-- Recherche -->
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Rechercher</mat-label>
+            <input 
+              matInput 
+              [(ngModel)]="searchText"
+              (keyup.enter)="onSearch()"
+              placeholder="Pain, fruits, légumes..."
+            >
+            <mat-icon matPrefix>search</mat-icon>
+            <button 
+              mat-icon-button 
+              matSuffix 
+              (click)="onSearch()"
+              type="button"
+            >
+              <mat-icon>send</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <!-- Catégorie -->
+          <mat-form-field appearance="outline" class="category-field">
+            <mat-label>Catégorie</mat-label>
+            <mat-select 
+              [(ngModel)]="selectedCategory"
+              (selectionChange)="onCategoryChange()"
+            >
+              @for (category of categories; track category.value) {
+                <mat-option [value]="category.value">
+                  {{ category.label }}
+                </mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>category</mat-icon>
+          </mat-form-field>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Chargement des donations...</p>
+      </div>
+    }
+
+    <!-- Liste des donations -->
+    @else if (donations().length > 0) {
+      <div class="donations-grid">
+        @for (donation of donations(); track donation._id) {
+          <mat-card class="donation-card">
+            <!-- Image -->
+            <div class="donation-image">
+              @if (donation.images && donation.images.length > 0) {
+                <img [src]="donation.images[0]" [alt]="donation.title">
+              } @else {
+                <div class="no-image">
+                  <mat-icon>restaurant</mat-icon>
+                </div>
+              }
+              
+              <!-- Badge statut -->
+              <div class="status-badge badge-{{ donation.status }}">
+                {{ getStatusLabel(donation.status) }}
+              </div>
+            </div>
+
+            <!-- Contenu -->
+            <mat-card-content>
+              <div class="donation-header">
+                <h3 class="donation-title">{{ donation.title }}</h3>
+                <mat-chip class="category-chip">
+                  {{ getCategoryLabel(donation.category) }}
+                </mat-chip>
+              </div>
+
+              <p class="donation-description">
+                {{ donation.description.substring(0, 100) }}
+                @if (donation.description.length > 100) {
+                  <span>...</span>
+                }
+              </p>
+
+              <div class="donation-info">
+                <div class="info-item">
+                  <mat-icon>inventory</mat-icon>
+                  <span>{{ donation.quantity }} {{ donation.unit }}</span>
+                </div>
+
+                <div class="info-item">
+                  <mat-icon>schedule</mat-icon>
+                  <span>{{ getTimeRemaining(donation.expiryDate) }}</span>
+                </div>
+
+                <div class="info-item">
+                  <mat-icon>location_on</mat-icon>
+                  <span>{{ donation.pickupLocation.address.split(',')[0] }}</span>
+                </div>
+              </div>
+
+              <!-- Donateur -->
+              <div class="donor-info">
+                <div class="donor-avatar">
+                  @if (donation.donor.avatar) {
+                    <img [src]="donation.donor.avatar" [alt]="donation.donor.firstName">
+                  } @else {
+                    <mat-icon>account_circle</mat-icon>
+                  }
+                </div>
+                <div class="donor-details">
+                  <span class="donor-name">
+                    {{ donation.donor.firstName }} {{ donation.donor.lastName }}
+                  </span>
+                  <div class="donor-rating">
+                    <mat-icon class="star-icon">star</mat-icon>
+                    <span>{{ donation.donor.rating.average || 0 }}/5</span>
+                    <span class="rating-count">({{ donation.donor.rating.count }})</span>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+
+            <!-- Actions -->
+            <mat-card-actions>
+              <button 
+                mat-raised-button 
+                color="primary"
+                [routerLink]="['/donations', donation._id]"
+              >
+                Voir détails
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+
+      <!-- Pagination -->
+      <mat-paginator
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[12, 24, 36]"
+        (page)="onPageChange($event)"
+        class="paginator"
+      >
+      </mat-paginator>
+    }
+
+    <!-- Aucun résultat -->
+    @else {
+      <div class="no-results">
+        <mat-icon>inbox</mat-icon>
+        <h3>Aucune donation trouvée</h3>
+        <p>Essayez de modifier vos critères de recherche</p>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,199 @@
+<div class="received-reservations-container">
+  
+  <!-- Header -->
+  <div class="header">
+    <h1>
+      <mat-icon>inbox</mat-icon>
+      Réservations reçues
+    </h1>
+    <p class="subtitle">Gérez les demandes de réservation pour vos donations</p>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading()" class="loader-container">
+    <mat-spinner></mat-spinner>
+    <p>Chargement des réservations...</p>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!loading()">
+
+    <!-- Onglets de filtres -->
+    <mat-tab-group 
+      mat-stretch-tabs="false" 
+      (selectedIndexChange)="filterByStatus(statuses[$event].value)"
+      class="filter-tabs">
+      
+      <mat-tab *ngFor="let status of statuses" [label]="status.label + ' (' + status.count + ')'">
+      </mat-tab>
+      
+    </mat-tab-group>
+
+    <!-- Liste des réservations -->
+    <div class="reservations-grid">
+      
+      <!-- Aucune réservation -->
+      <div *ngIf="filteredReservations().length === 0" class="no-reservations">
+        <mat-icon>inbox</mat-icon>
+        <h2>Aucune réservation</h2>
+        <p>Vous n'avez pas encore reçu de réservation{{ selectedStatus() !== 'all' ? ' avec ce statut' : '' }}.</p>
+        <button mat-raised-button color="primary" routerLink="/donations/create">
+          <mat-icon>add</mat-icon>
+          Créer une donation
+        </button>
+      </div>
+
+      <!-- Cartes de réservations -->
+      <mat-card *ngFor="let reservation of filteredReservations()" class="reservation-card">
+        
+        <!-- En-tête avec statut -->
+        <div class="card-header">
+          <mat-chip [color]="getStatusColor(reservation.status)" highlighted>
+            <mat-icon>{{ getStatusIcon(reservation.status) }}</mat-icon>
+            {{ getStatusLabel(reservation.status) }}
+          </mat-chip>
+          
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item [routerLink]="['/reservations', reservation._id]">
+              <mat-icon>visibility</mat-icon>
+              Voir les détails
+            </button>
+            <button 
+              mat-menu-item 
+              *ngIf="canConfirm(reservation)"
+              (click)="confirmReservation(reservation._id)">
+              <mat-icon>check_circle</mat-icon>
+              Confirmer
+            </button>
+            <button 
+              mat-menu-item 
+              *ngIf="canComplete(reservation)"
+              (click)="completeReservation(reservation._id)">
+              <mat-icon>done_all</mat-icon>
+              Marquer comme complétée
+            </button>
+            <button 
+              mat-menu-item 
+              *ngIf="canCancel(reservation)"
+              (click)="cancelReservation(reservation._id)">
+              <mat-icon>cancel</mat-icon>
+              Refuser/Annuler
+            </button>
+          </mat-menu>
+        </div>
+
+        <!-- Image et infos de la donation -->
+        <div class="card-content">
+          
+          <div class="donation-image">
+            <img 
+              *ngIf="reservation.donation?.images?.length > 0; else noImage"
+              [src]="reservation.donation.images[0]" 
+              [alt]="reservation.donation.title">
+            
+            <ng-template #noImage>
+              <div class="no-image-placeholder">
+                <mat-icon>image_not_supported</mat-icon>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="donation-info">
+            <h3>
+              <span class="category-icon">
+                {{ getCategoryIcon(reservation.donation?.category) }}
+              </span>
+              {{ reservation.donation?.title }}
+            </h3>
+
+            <div class="info-item">
+              <mat-icon>category</mat-icon>
+              <span>{{ reservation.donation?.category }}</span>
+            </div>
+
+            <div class="info-item">
+              <mat-icon>shopping_basket</mat-icon>
+              <span>{{ reservation.donation?.quantity }} {{ reservation.donation?.unit }}</span>
+            </div>
+
+            <div class="info-item">
+              <mat-icon>event</mat-icon>
+              <span>Retrait prévu: {{ formatDate(reservation.pickupDate) }}</span>
+            </div>
+
+            <div class="info-item">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ reservation.donation?.pickupLocation?.address }}</span>
+            </div>
+
+            <!-- Bénéficiaire -->
+            <div class="beneficiary-info">
+              <img 
+                [src]="reservation.beneficiary?.avatar || 'assets/images/default-avatar.png'"
+                class="beneficiary-avatar">
+              <div>
+                <strong>{{ reservation.beneficiary?.firstName }} {{ reservation.beneficiary?.lastName }}</strong>
+                <p *ngIf="reservation.beneficiary?.phone">
+                  <mat-icon>phone</mat-icon>
+                  {{ reservation.beneficiary.phone }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Message -->
+            <div *ngIf="reservation.message" class="message">
+              <mat-icon>message</mat-icon>
+              <p>{{ reservation.message }}</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Actions -->
+        <mat-card-actions>
+          <button 
+            mat-raised-button 
+            color="primary"
+            *ngIf="canConfirm(reservation)"
+            (click)="confirmReservation(reservation._id)">
+            <mat-icon>check_circle</mat-icon>
+            Confirmer
+          </button>
+          
+          <button 
+            mat-raised-button 
+            color="primary"
+            *ngIf="canComplete(reservation)"
+            (click)="completeReservation(reservation._id)">
+            <mat-icon>done_all</mat-icon>
+            Compléter
+          </button>
+
+          <button 
+            mat-button 
+            color="warn"
+            *ngIf="canCancel(reservation)"
+            (click)="cancelReservation(reservation._id)">
+            <mat-icon>cancel</mat-icon>
+            Refuser
+          </button>
+
+          <button 
+            mat-button 
+            [routerLink]="['/reservations', reservation._id]">
+            <mat-icon>visibility</mat-icon>
+            Détails
+          </button>
+        </mat-card-actions>
+
+      </mat-card>
+
+    </div>
+
+  </div>
+
+</div>

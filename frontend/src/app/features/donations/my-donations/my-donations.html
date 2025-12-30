@@ -1,0 +1,138 @@
+<!-- src/app/features/donations/my-donations/my-donations.html -->
+<div class="my-donations-page">
+  <div class="container">
+    <div class="page-header">
+      <h1>📦 Mes Donations</h1>
+      <button 
+        mat-raised-button 
+        color="primary"
+        routerLink="/donations/create"
+      >
+        <mat-icon>add</mat-icon>
+        Nouvelle donation
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Chargement...</p>
+      </div>
+    } @else if (donations().length > 0) {
+      <mat-tab-group class="donations-tabs">
+        <!-- Toutes -->
+        <mat-tab label="Toutes ({{ donations().length }})">
+          <div class="donations-grid">
+            @for (donation of donations(); track donation._id) {
+              <mat-card class="donation-card">
+                <div class="card-header">
+                  <h3>{{ donation.title }}</h3>
+                  <span [class]="'status-badge ' + getStatusClass(donation.status)">
+                    {{ getStatusLabel(donation.status) }}
+                  </span>
+                </div>
+
+                <p class="description">{{ donation.description }}</p>
+
+                <div class="info-row">
+                  <span><mat-icon>category</mat-icon> {{ donation.category }}</span>
+                  <span><mat-icon>inventory</mat-icon> {{ donation.quantity }} {{ donation.unit }}</span>
+                  <span><mat-icon>visibility</mat-icon> {{ donation.views }} vues</span>
+                </div>
+
+                <div class="card-actions">
+                  <button mat-button [routerLink]="['/donations', donation._id]">
+                    Détails
+                  </button>
+                  @if (donation.status === 'available') {
+                    <button mat-button color="warn">
+                      Supprimer
+                    </button>
+                  }
+                </div>
+              </mat-card>
+            }
+          </div>
+        </mat-tab>
+
+        <!-- Disponibles -->
+        <mat-tab label="Disponibles ({{ getFilteredDonations('available').length }})">
+          <div class="donations-grid">
+            @for (donation of getFilteredDonations('available'); track donation._id) {
+              <mat-card class="donation-card">
+                <div class="card-header">
+                  <h3>{{ donation.title }}</h3>
+                  <span class="status-badge badge-available">
+                    {{ getStatusLabel(donation.status) }}
+                  </span>
+                </div>
+                <p class="description">{{ donation.description }}</p>
+                <div class="info-row">
+                  <span><mat-icon>category</mat-icon> {{ donation.category }}</span>
+                  <span><mat-icon>inventory</mat-icon> {{ donation.quantity }} {{ donation.unit }}</span>
+                  <span><mat-icon>visibility</mat-icon> {{ donation.views }} vues</span>
+                </div>
+                <div class="card-actions">
+                  <button mat-button [routerLink]="['/donations', donation._id]">Détails</button>
+                </div>
+              </mat-card>
+            }
+          </div>
+        </mat-tab>
+
+        <!-- Réservées -->
+        <mat-tab label="Réservées ({{ getFilteredDonations('reserved').length }})">
+          <div class="donations-grid">
+            @for (donation of getFilteredDonations('reserved'); track donation._id) {
+              <mat-card class="donation-card">
+                <div class="card-header">
+                  <h3>{{ donation.title }}</h3>
+                  <span class="status-badge badge-reserved">
+                    {{ getStatusLabel(donation.status) }}
+                  </span>
+                </div>
+                <p class="description">{{ donation.description }}</p>
+                <div class="card-actions">
+                  <button mat-button [routerLink]="['/donations', donation._id]">Détails</button>
+                </div>
+              </mat-card>
+            }
+          </div>
+        </mat-tab>
+
+        <!-- Complétées -->
+        <mat-tab label="Complétées ({{ getFilteredDonations('completed').length }})">
+          <div class="donations-grid">
+            @for (donation of getFilteredDonations('completed'); track donation._id) {
+              <mat-card class="donation-card">
+                <div class="card-header">
+                  <h3>{{ donation.title }}</h3>
+                  <span class="status-badge badge-completed">
+                    {{ getStatusLabel(donation.status) }}
+                  </span>
+                </div>
+                <p class="description">{{ donation.description }}</p>
+                <div class="card-actions">
+                  <button mat-button [routerLink]="['/donations', donation._id]">Détails</button>
+                </div>
+              </mat-card>
+            }
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    } @else {
+      <div class="no-donations">
+        <mat-icon>inbox</mat-icon>
+        <h3>Aucune donation</h3>
+        <p>Vous n'avez pas encore créé de donation</p>
+        <button 
+          mat-raised-button 
+          color="primary"
+          routerLink="/donations/create"
+        >
+          Créer ma première donation
+        </button>
+      </div>
+    }
+  </div>
+</div>
